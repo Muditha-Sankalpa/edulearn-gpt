@@ -3,6 +3,7 @@ const { body } = require("express-validator");
 const verifyToken = require("../middleware/verifyToken");
 const requireRole = require("../middleware/requireRole");
 const validate = require("../middleware/validate");
+const { getEnrolledStudents } = require("../controllers/enrollmentController");
 const {
   createCourse,
   getCourses,
@@ -31,5 +32,6 @@ router.get("/:id", getCourseById);
 router.post("/", verifyToken, requireRole("instructor"), courseValidation, validate, createCourse);
 router.put("/:id", verifyToken, requireRole("instructor"), courseValidation, validate, updateCourse);
 router.delete("/:id", verifyToken, requireRole("instructor"), deleteCourse);
+router.get("/:id/students", verifyToken, requireRole("instructor"), getEnrolledStudents);
 
 module.exports = router;
