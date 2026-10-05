@@ -1,13 +1,23 @@
-import { motion } from "framer-motion";
+import { Outlet, useLocation, Link } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import logo from "../../assets/logo.webp";
+import authBg from "../../assets/auth-bg.webp";
 
-const AuthLayout = ({ children }) => {
+const AuthLayout = () => {
+  const location = useLocation();
+
   return (
     <div className="min-h-screen flex bg-background">
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center">
         <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${authBg})` }}
+        />
+        <div
           className="absolute inset-0"
           style={{
             background: "linear-gradient(135deg, #3D348B 0%, #7678ED 35%, #F7B801 70%, #F35B04 100%)",
+            opacity: 0.82,
           }}
         />
         <motion.div
@@ -22,21 +32,32 @@ const AuthLayout = ({ children }) => {
           transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
           style={{ bottom: "15%", right: "10%" }}
         />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="relative z-10 text-white text-center px-12"
-        >
-          <h1 className="text-4xl font-bold mb-4">EduLearn</h1>
-          <p className="text-white/80 text-lg">
+        <div className="relative z-10 text-white text-center px-12">
+          <Link to="/courses" className="bg-white rounded-2xl p-5 inline-block mb-6 shadow-xl">
+            <img src={logo} alt="EduLearn" className="h-20 w-auto" />
+          </Link>
+          <p className="text-white/80 text-lg max-w-xs mx-auto">
             Learn what matters — courses picked for where you want to go.
           </p>
-        </motion.div>
+        </div>
       </div>
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-12">
-        {children}
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 py-12">
+        <Link to="/courses" className="mb-8 lg:hidden">
+          <img src={logo} alt="EduLearn" className="h-14 w-auto" />
+        </Link>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -16 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="w-full flex justify-center"
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

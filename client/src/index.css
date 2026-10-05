@@ -19,4 +19,6 @@ body {
   background-color: var(--color-background);
   color: var(--color-text);
   font-family: var(--font-sans);
+  line-height: 1.65;
+  letter-spacing: 0.01em;
 }

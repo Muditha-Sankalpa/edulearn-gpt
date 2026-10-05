@@ -1,21 +1,21 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import AuthLayout from "./components/layout/AuthLayout";
 import MainLayout from "./components/layout/MainLayout";
 import CourseList from "./pages/courses/CourseList";
 import CourseDetail from "./pages/courses/CourseDetail";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import MyCourses from "./pages/student/MyCourses";
 import InstructorDashboard from "./pages/instructor/Dashboard";
-import NewCourse from "./pages/instructor/NewCourse";
-import EditCourse from "./pages/instructor/EditCourse";
-import CourseStudents from "./pages/instructor/CourseStudents";
 
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
+      <Route element={<AuthLayout />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Route>
 
       <Route element={<MainLayout />}>
         <Route path="/" element={<Navigate to="/courses" replace />} />
@@ -28,9 +28,6 @@ function App() {
 
         <Route element={<ProtectedRoute role="instructor" />}>
           <Route path="/instructor/dashboard" element={<InstructorDashboard />} />
-          <Route path="/instructor/courses/new" element={<NewCourse />} />
-          <Route path="/instructor/courses/:id/edit" element={<EditCourse />} />
-          <Route path="/instructor/courses/:id/students" element={<CourseStudents />} />
         </Route>
       </Route>
     </Routes>
