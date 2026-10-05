@@ -1,6 +1,12 @@
 const OpenAI = require("openai");
 
-const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+let client = null;
+const getClient = () => {
+  if (!client) {
+    client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+  }
+  return client;
+};
 
 const MOCK_RESPONSE = {
   message: "Based on your interest, here are some recommended courses to get started.",
@@ -30,7 +36,7 @@ const getCourseRecommendations = async (userPrompt, courses = []) => {
     return MOCK_RESPONSE;
   }
 
-  const completion = await client.chat.completions.create({
+  const completion = await getClient().chat.completions.create({
     model: "gpt-4o-mini",
     messages: [{ role: "user", content: buildPrompt(userPrompt, courses) }],
     temperature: 0.3,
