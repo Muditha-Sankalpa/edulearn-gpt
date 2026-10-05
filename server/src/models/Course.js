@@ -14,4 +14,6 @@ const courseSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+courseSchema.index({ instructor: 1, title: 1 }, { unique: true });
+
 module.exports = mongoose.model("Course", courseSchema);

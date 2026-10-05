@@ -13,6 +13,9 @@ exports.createCourse = async (req, res, next) => {
 
     res.status(201).json(course);
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ message: "You already have a course with this title" });
+    }
     next(err);
   }
 };
