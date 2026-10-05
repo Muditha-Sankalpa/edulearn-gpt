@@ -1,17 +1,21 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import MainLayout from "./components/layout/MainLayout";
+import CourseList from "./pages/courses/CourseList";
+import CourseDetail from "./pages/courses/CourseDetail";
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/courses" element={<div className="p-8">Courses page (coming next)</div>} />
-      <Route
-        path="/instructor/dashboard"
-        element={<div className="p-8">Instructor dashboard (coming next)</div>}
-      />
+
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<Navigate to="/courses" replace />} />
+        <Route path="/courses" element={<CourseList />} />
+        <Route path="/courses/:id" element={<CourseDetail />} />
+      </Route>
     </Routes>
   );
 }
