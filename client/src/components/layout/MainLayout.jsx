@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 import RecommendationsPanel from "../recommendations/RecommendationsPanel";
+import ScrollToTop from "../ui/ScrollToTop";
 
 const MainLayout = () => {
   const location = useLocation();
@@ -45,6 +46,7 @@ const MainLayout = () => {
         </AnimatePresence>
       </main>
       <Footer />
+      <ScrollToTop />
       <RecommendationsPanel open={recommendationsOpen} onClose={() => setRecommendationsOpen(false)} />
     </div>
   );
