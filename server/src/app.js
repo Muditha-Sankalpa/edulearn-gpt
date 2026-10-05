@@ -1,11 +1,24 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 
 const app = express();
 
+const allowedOrigins = ["http://localhost:5173", process.env.CLIENT_URL].filter(Boolean);
+
 app.use(helmet());
-app.use(cors());
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+  })
+);
 app.use(express.json());
 
 app.get("/api/health", (req, res) => {

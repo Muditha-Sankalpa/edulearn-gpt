@@ -1,12 +1,22 @@
 const express = require("express");
 const { body } = require("express-validator");
+const rateLimit = require("express-rate-limit");
 const { register, login } = require("../controllers/authController");
 const validate = require("../middleware/validate");
 
 const router = express.Router();
 
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many attempts. Please try again later." },
+});
+
 router.post(
   "/register",
+  authLimiter,
   [
     body("name").trim().notEmpty().withMessage("Name is required"),
     body("email").isEmail().withMessage("Valid email is required"),
@@ -19,6 +29,7 @@ router.post(
 
 router.post(
   "/login",
+  authLimiter,
   [
     body("email").isEmail().withMessage("Valid email is required"),
     body("password").notEmpty().withMessage("Password is required"),
