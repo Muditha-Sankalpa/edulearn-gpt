@@ -42,8 +42,20 @@ const AuthLayout = () => {
         </div>
       </div>
 
-      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 py-12">
-        <Link to="/courses" className="mb-8 lg:hidden">
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center lg:hidden"
+          style={{ backgroundImage: `url(${authBg})` }}
+        />
+        <div
+          className="absolute inset-0 lg:hidden"
+          style={{
+            background: "linear-gradient(135deg, #3D348B 0%, #7678ED 35%, #F7B801 70%, #F35B04 100%)",
+            opacity: 0.85,
+          }}
+        />
+
+        <Link to="/courses" className="mb-8 lg:hidden relative z-10">
           <img src={logo} alt="EduLearn" className="h-14 w-auto" />
         </Link>
         <AnimatePresence mode="wait">
@@ -53,7 +65,7 @@ const AuthLayout = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -16 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="w-full flex justify-center"
+            className="w-full flex justify-center relative z-10"
           >
             <Outlet />
           </motion.div>
