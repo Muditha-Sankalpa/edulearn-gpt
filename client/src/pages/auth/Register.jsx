@@ -1,17 +1,28 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { Mail, Lock, User, Eye, EyeOff, UserPlus, GraduationCap, Presentation } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import AuthLayout from "../../components/layout/AuthLayout";
 import Input from "../../components/ui/Input";
 import Button from "../../components/ui/Button";
 import ErrorBanner from "../../components/ui/ErrorBanner";
+
+const getPasswordStrength = (password) => {
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+  if (/\d/.test(password) || /[^A-Za-z0-9]/.test(password)) score++;
+  return score;
+};
+
+const STRENGTH_LABELS = ["Weak", "Fair", "Good", "Strong"];
+const STRENGTH_COLORS = ["#F35B04", "#F18701", "#F7B801", "#7678ED"];
 
 const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({ name: "", email: "", password: "", role: "student" });
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -31,35 +42,109 @@ const Register = () => {
     }
   };
 
+  const strength = formData.password ? getPasswordStrength(formData.password) : -1;
+
   return (
-    <AuthLayout>
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-sm"
-      >
+    <div className="w-full max-w-sm bg-surface border border-border rounded-2xl shadow-xl p-8">
+        <div
+          className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
+          style={{ background: "linear-gradient(135deg, #7678ED, #3D348B)" }}
+        >
+          <UserPlus className="w-5 h-5 text-white" />
+        </div>
+
         <h1 className="text-2xl font-semibold text-text mb-1">Create an account</h1>
         <p className="text-text-muted text-sm mb-6">Start learning something new today.</p>
 
         <ErrorBanner message={error} />
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Input label="Name" type="text" name="name" value={formData.name} onChange={handleChange} required />
-          <Input label="Email" type="email" name="email" value={formData.email} onChange={handleChange} required />
-          <Input label="Password" type="password" name="password" value={formData.password} onChange={handleChange} required minLength={6} />
+          <Input
+            label="Name"
+            type="text"
+            name="name"
+            icon={User}
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Your full name"
+            required
+          />
+          <Input
+            label="Email"
+            type="email"
+            name="email"
+            icon={Mail}
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="you@example.com"
+            required
+          />
+          <div>
+            <Input
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              icon={Lock}
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="At least 6 characters"
+              required
+              minLength={6}
+              rightElement={
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="text-text-muted hover:text-text transition-colors"
+                  tabIndex={-1}
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              }
+            />
+            {strength >= 0 && (
+              <div className="mt-2">
+                <div className="flex gap-1">
+                  {[0, 1, 2].map((i) => (
+                    <div
+                      key={i}
+                      className="h-1 flex-1 rounded-full transition-colors"
+                      style={{ backgroundColor: i <= strength ? STRENGTH_COLORS[strength] : "#E5E7EB" }}
+                    />
+                  ))}
+                </div>
+                <p className="text-xs text-text-muted mt-1">{STRENGTH_LABELS[strength]} password</p>
+              </div>
+            )}
+          </div>
 
           <div>
             <label className="block text-sm text-text-muted mb-1">I am a</label>
-            <select
-              name="role"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full border border-border rounded-lg px-3 py-2.5 text-text focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              <option value="student">Student</option>
-              <option value="instructor">Instructor</option>
-            </select>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, role: "student" })}
+                className={`flex items-center justify-center gap-2 border rounded-lg py-2.5 text-sm font-medium transition-colors ${
+                  formData.role === "student"
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-border text-text-muted hover:border-primary/40"
+                }`}
+              >
+                <GraduationCap className="w-4 h-4" />
+                Student
+              </button>
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, role: "instructor" })}
+                className={`flex items-center justify-center gap-2 border rounded-lg py-2.5 text-sm font-medium transition-colors ${
+                  formData.role === "instructor"
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-border text-text-muted hover:border-primary/40"
+                }`}
+              >
+                <Presentation className="w-4 h-4" />
+                Instructor
+              </button>
+            </div>
           </div>
 
           <Button type="submit" loading={loading}>
@@ -71,8 +156,7 @@ const Register = () => {
           Already have an account?{" "}
           <Link to="/login" className="text-primary hover:underline font-medium">Log in</Link>
         </p>
-      </motion.div>
-    </AuthLayout>
+      </div>
   );
 };
 

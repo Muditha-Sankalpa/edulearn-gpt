@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { BookOpen } from "lucide-react";
 import axiosClient from "../../api/axiosClient";
 import CourseCard from "../../components/courses/CourseCard";
+import CourseDetailModal from "../../components/courses/CourseDetailModal";
 import CourseCardSkeleton from "../../components/ui/CourseCardSkeleton";
 import EmptyState from "../../components/ui/EmptyState";
 import PageHeader from "../../components/ui/PageHeader";
@@ -11,6 +12,7 @@ const CourseList = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -52,11 +54,13 @@ const CourseList = () => {
               key={course._id}
               variants={{ hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } }}
             >
-              <CourseCard course={course} />
+              <CourseCard course={course} onView={setSelectedCourseId} />
             </motion.div>
           ))}
         </motion.div>
       )}
+
+      <CourseDetailModal courseId={selectedCourseId} onClose={() => setSelectedCourseId(null)} />
     </div>
   );
 };

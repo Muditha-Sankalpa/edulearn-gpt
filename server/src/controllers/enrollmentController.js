@@ -36,6 +36,27 @@ exports.getMyEnrollments = async (req, res, next) => {
   }
 };
 
+exports.updateEnrollmentStatus = async (req, res, next) => {
+  try {
+    const { status } = req.body;
+
+    const enrollment = await Enrollment.findById(req.params.id);
+    if (!enrollment) {
+      return res.status(404).json({ message: "Enrollment not found" });
+    }
+    if (enrollment.student.toString() !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized to update this enrollment" });
+    }
+
+    enrollment.status = status;
+    await enrollment.save();
+
+    res.status(200).json(enrollment);
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.getEnrolledStudents = async (req, res, next) => {
   try {
     const course = await Course.findById(req.params.id);
