@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 const AuthLayout = ({ children }) => {
   return (
-    <div className="min-h-screen flex bg-surface">
+    <div className="min-h-screen flex bg-background">
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden items-center justify-center">
         <div
           className="absolute inset-0"

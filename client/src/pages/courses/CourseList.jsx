@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { BookOpen } from "lucide-react";
 import axiosClient from "../../api/axiosClient";
 import CourseCard from "../../components/courses/CourseCard";
+import CourseCardSkeleton from "../../components/ui/CourseCardSkeleton";
+import EmptyState from "../../components/ui/EmptyState";
+import PageHeader from "../../components/ui/PageHeader";
 
 const CourseList = () => {
   const [courses, setCourses] = useState([]);
@@ -22,15 +26,20 @@ const CourseList = () => {
     fetchCourses();
   }, []);
 
-  if (loading) return <p className="text-text-muted">Loading courses...</p>;
-  if (error) return <p className="text-accent-red">{error}</p>;
-
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-text mb-6">Available Courses</h1>
+      <PageHeader icon={BookOpen} title="Available Courses" subtitle="Browse what's on offer and find your next course." />
 
-      {courses.length === 0 ? (
-        <p className="text-text-muted">No courses available yet.</p>
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <CourseCardSkeleton />
+          <CourseCardSkeleton />
+          <CourseCardSkeleton />
+        </div>
+      ) : error ? (
+        <p className="text-accent-red">{error}</p>
+      ) : courses.length === 0 ? (
+        <EmptyState icon={BookOpen} title="No courses available yet" description="Check back soon — instructors are still setting things up." />
       ) : (
         <motion.div
           initial="hidden"

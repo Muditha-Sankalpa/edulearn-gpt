@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { GraduationCap } from "lucide-react";
 import axiosClient from "../../api/axiosClient";
+import CourseCardSkeleton from "../../components/ui/CourseCardSkeleton";
+import EmptyState from "../../components/ui/EmptyState";
+import PageHeader from "../../components/ui/PageHeader";
 
 const MyCourses = () => {
   const [enrollments, setEnrollments] = useState([]);
@@ -22,20 +26,29 @@ const MyCourses = () => {
     fetchEnrollments();
   }, []);
 
-  if (loading) return <p className="text-text-muted">Loading your courses...</p>;
-  if (error) return <p className="text-accent-red">{error}</p>;
-
   return (
     <div>
-      <h1 className="text-2xl font-semibold text-text mb-6">My Courses</h1>
+      <PageHeader icon={GraduationCap} title="My Courses" subtitle="Everything you're currently enrolled in." />
 
-      {enrollments.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-text-muted mb-4">You haven't enrolled in any courses yet.</p>
-          <Link to="/courses" className="text-primary font-medium hover:underline">
-            Browse available courses →
-          </Link>
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <CourseCardSkeleton />
+          <CourseCardSkeleton />
+          <CourseCardSkeleton />
         </div>
+      ) : error ? (
+        <p className="text-accent-red">{error}</p>
+      ) : enrollments.length === 0 ? (
+        <EmptyState
+          icon={GraduationCap}
+          title="No enrollments yet"
+          description="Browse available courses and enroll to start learning."
+          action={
+            <Link to="/courses" className="bg-primary hover:bg-primary-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+              Browse courses
+            </Link>
+          }
+        />
       ) : (
         <motion.div
           initial="hidden"
