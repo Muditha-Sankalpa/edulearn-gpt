@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { LayoutGrid } from "lucide-react";
 import axiosClient from "../../api/axiosClient";
+import EmptyState from "../../components/ui/EmptyState";
+import PageHeader from "../../components/ui/PageHeader";
 
 const InstructorDashboard = () => {
   const [courses, setCourses] = useState([]);
@@ -37,29 +40,41 @@ const InstructorDashboard = () => {
     }
   };
 
-  if (loading) return <p className="text-text-muted">Loading your courses...</p>;
-
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-text">My Courses</h1>
-        <Link
-          to="/instructor/courses/new"
-          className="bg-primary hover:bg-primary-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-        >
-          + New Course
-        </Link>
-      </div>
+      <PageHeader
+        icon={LayoutGrid}
+        title="My Courses"
+        subtitle="Manage the courses you've created."
+        action={
+          <Link
+            to="/instructor/courses/new"
+            className="bg-primary hover:bg-primary-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors shrink-0"
+          >
+            + New Course
+          </Link>
+        }
+      />
 
       {error && <p className="text-accent-red text-sm mb-4">{error}</p>}
 
-      {courses.length === 0 ? (
-        <div className="text-center py-16">
-          <p className="text-text-muted mb-4">You haven't created any courses yet.</p>
-          <Link to="/instructor/courses/new" className="text-primary font-medium hover:underline">
-            Create your first course →
-          </Link>
+      {loading ? (
+        <div className="space-y-3">
+          <div className="border border-border rounded-xl h-20 animate-pulse bg-border/20" />
+          <div className="border border-border rounded-xl h-20 animate-pulse bg-border/20" />
+          <div className="border border-border rounded-xl h-20 animate-pulse bg-border/20" />
         </div>
+      ) : courses.length === 0 ? (
+        <EmptyState
+          icon={LayoutGrid}
+          title="No courses yet"
+          description="Create your first course to start accepting enrollments."
+          action={
+            <Link to="/instructor/courses/new" className="bg-primary hover:bg-primary-dark text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+              Create your first course
+            </Link>
+          }
+        />
       ) : (
         <motion.div
           initial="hidden"

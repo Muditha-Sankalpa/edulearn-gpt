@@ -7,6 +7,9 @@ import CourseDetail from "./pages/courses/CourseDetail";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import MyCourses from "./pages/student/MyCourses";
 import InstructorDashboard from "./pages/instructor/Dashboard";
+import NewCourse from "./pages/instructor/NewCourse";
+import EditCourse from "./pages/instructor/EditCourse";
+import CourseStudents from "./pages/instructor/CourseStudents";
 
 function App() {
   return (
@@ -25,6 +28,9 @@ function App() {
 
         <Route element={<ProtectedRoute role="instructor" />}>
           <Route path="/instructor/dashboard" element={<InstructorDashboard />} />
+          <Route path="/instructor/courses/new" element={<NewCourse />} />
+          <Route path="/instructor/courses/:id/edit" element={<EditCourse />} />
+          <Route path="/instructor/courses/:id/students" element={<CourseStudents />} />
         </Route>
       </Route>
     </Routes>
