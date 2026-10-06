@@ -15,7 +15,7 @@ Seeded accounts (see [Seeding the database](#seeding-the-database)) all use the 
 
 **Student**
 - Register / log in
-- Browse all available courses, with search by title, topic, or instructor
+- Browse all available courses, with search (by title, topic, or instructor) and pagination (10 per page)
 - View course details in a popup, enroll in a course
 - Track progress per course (Enrolled → In Progress → Completed) from My Courses
 - Get AI-powered course recommendations from a free-text prompt (e.g. "I want to be a software engineer, what should I take?")
@@ -160,7 +160,6 @@ The brief lists AWS, Azure, and Heroku as example cloud platforms. Heroku's free
 
 These were left out intentionally — documented here rather than treated as bugs:
 
-- **No pagination on course listings.** Fine at the current scale (~20 courses); would need addressing if the catalog grew substantially.
 - **In-memory rate limiting.** Resets on server restart and isn't shared across instances. Acceptable for a single-instance free-tier deployment; would need a shared store (e.g. Redis) behind a load balancer.
 - **No JWT refresh tokens.** Tokens expire after 1 day and can't be revoked early. Acceptable for this project's threat model; a refresh-token flow would be the next step for a production app with stricter session requirements.
 - **No horizontal scaling / load balancing.** Render's free tier runs a single instance. The backend is stateless (JWT auth, no server-side sessions), so it would scale horizontally without code changes if deployed behind infrastructure that supported it.
