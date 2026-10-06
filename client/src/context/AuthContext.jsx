@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
+import { registerLogoutHandler } from "../utils/authBridge";
 
 const AuthContext = createContext(null);
 
@@ -39,6 +40,10 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
     setUser(null);
   };
+
+  useEffect(() => {
+    registerLogoutHandler(logout);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, loading, login, register, logout }}>
