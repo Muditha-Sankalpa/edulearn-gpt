@@ -1,5 +1,5 @@
 const express = require("express");
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 const verifyToken = require("../middleware/verifyToken");
 const requireRole = require("../middleware/requireRole");
 const validate = require("../middleware/validate");
@@ -21,17 +21,34 @@ const courseValidation = [
   body("content").trim().notEmpty().withMessage("Content is required"),
 ];
 
+const idParamValidation = [param("id").isMongoId().withMessage("Invalid course id")];
+
 // public
 router.get("/", getCourses);
 
 // instructor-only — must come before "/:id" so "mine" isn't treated as an id param
 router.get("/mine", verifyToken, requireRole("instructor"), getMyCourses);
 
-router.get("/:id", getCourseById);
+router.get("/:id", idParamValidation, validate, getCourseById);
 
 router.post("/", verifyToken, requireRole("instructor"), courseValidation, validate, createCourse);
-router.put("/:id", verifyToken, requireRole("instructor"), courseValidation, validate, updateCourse);
-router.delete("/:id", verifyToken, requireRole("instructor"), deleteCourse);
-router.get("/:id/students", verifyToken, requireRole("instructor"), getEnrolledStudents);
+router.put(
+  "/:id",
+  verifyToken,
+  requireRole("instructor"),
+  idParamValidation,
+  courseValidation,
+  validate,
+  updateCourse
+);
+router.delete("/:id", verifyToken, requireRole("instructor"), idParamValidation, validate, deleteCourse);
+router.get(
+  "/:id/students",
+  verifyToken,
+  requireRole("instructor"),
+  idParamValidation,
+  validate,
+  getEnrolledStudents
+);
 
 module.exports = router;

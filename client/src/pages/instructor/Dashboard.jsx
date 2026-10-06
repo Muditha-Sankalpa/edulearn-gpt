@@ -30,7 +30,7 @@ const InstructorDashboard = () => {
       try {
         const res = await axiosClient.get("/courses/mine");
         setCourses(res.data);
-      } catch (err) {
+      } catch {
         setError("Failed to load your courses.");
       } finally {
         setLoading(false);
@@ -46,7 +46,7 @@ const InstructorDashboard = () => {
     try {
       await axiosClient.delete(`/courses/${id}`);
       setCourses((prev) => prev.filter((c) => c._id !== id));
-    } catch (err) {
+    } catch {
       setError("Failed to delete course.");
     } finally {
       setDeletingId(null);

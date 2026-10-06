@@ -19,7 +19,7 @@ const CourseList = () => {
       try {
         const res = await axiosClient.get("/courses");
         setCourses(res.data);
-      } catch (err) {
+      } catch {
         setError("Failed to load courses. Please try again.");
       } finally {
         setLoading(false);

@@ -20,7 +20,14 @@ router.post(
   verifyToken,
   requireRole("student"),
   recommendationLimiter,
-  [body("prompt").trim().notEmpty().withMessage("Prompt is required")],
+  [
+    body("prompt")
+      .trim()
+      .notEmpty()
+      .withMessage("Prompt is required")
+      .isLength({ max: 500 })
+      .withMessage("Prompt must be 500 characters or fewer"),
+  ],
   validate,
   getRecommendations
 );
