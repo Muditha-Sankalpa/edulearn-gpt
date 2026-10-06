@@ -12,7 +12,7 @@ const MainLayout = () => {
   return (
     <div className="min-h-screen bg-background relative flex flex-col">
       <div
-        className="fixed top-0 left-0 right-0 h-[3px] z-50"
+        className="fixed top-0 left-0 right-0 h-0.75 z-50"
         style={{ background: "linear-gradient(90deg, #3D348B, #7678ED, #F7B801, #F18701, #F35B04)" }}
       />
 
