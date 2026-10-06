@@ -128,11 +128,18 @@ Get AI-generated course recommendations based on a free-text prompt. **Auth:** S
 
 **Response** `200`
 ```json
-{ "message": "Here are some courses to get you started.", "recommendedCourses": ["Introduction to Web Development", "Modern JavaScript Fundamentals"] }
+{
+  "message": "Here are some courses to get you started.",
+  "recommendedCourses": [
+    { "id": "...", "title": "Introduction to Web Development" },
+    { "id": "...", "title": "Modern JavaScript Fundamentals" }
+  ]
+}
 ```
 
 Notes:
-- When `USE_REAL_GPT=false` (default), returns a fixed mock response — no OpenAI call is made.
+- `recommendedCourses` items include the real course `id` so the UI can link directly to each course's detail view.
+- When `USE_REAL_GPT=false` (default), returns the first 3 real courses from the catalog as a mock response — no OpenAI call is made.
 - When real, recommendations are grounded in the actual course catalog: the model's output is cross-checked against real course titles, so hallucinated/invented titles are filtered out before the response is returned.
 - `502` if the OpenAI API call itself fails (outage, invalid key, etc.) — returns a friendly error message rather than a raw 500.
 
