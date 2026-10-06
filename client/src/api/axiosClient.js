@@ -1,4 +1,11 @@
 import axios from "axios";
+import { forceLogout } from "../utils/authBridge";
+
+if (!import.meta.env.VITE_API_BASE_URL) {
+  console.warn(
+    "VITE_API_BASE_URL is not set — API requests will fail. Set it in your .env file (see .env.example)."
+  );
+}
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -18,9 +25,7 @@ axiosClient.interceptors.response.use(
     const isAuthRequest = error.config?.url?.includes("/auth/login") || error.config?.url?.includes("/auth/register");
 
     if (error.response?.status === 401 && !isAuthRequest) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/login";
+      forceLogout();
     }
     return Promise.reject(error);
   }

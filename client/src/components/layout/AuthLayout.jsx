@@ -1,10 +1,21 @@
-import { Outlet, useLocation, Link } from "react-router-dom";
+import { Outlet, useLocation, Link, Navigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { useAuth } from "../../context/AuthContext";
 import logo from "../../assets/logo.webp";
 import authBg from "../../assets/auth-bg.webp";
 
+const ROLE_HOME = {
+  student: "/courses",
+  instructor: "/instructor/dashboard",
+};
+
 const AuthLayout = () => {
   const location = useLocation();
+  const { user } = useAuth();
+
+  if (user) {
+    return <Navigate to={ROLE_HOME[user.role] || "/courses"} replace />;
+  }
 
   return (
     <div className="min-h-screen flex bg-background">
