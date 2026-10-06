@@ -73,12 +73,14 @@ exports.getEnrolledStudents = async (req, res, next) => {
     );
 
     res.status(200).json(
-      enrollments.map((e) => ({
-        studentId: e.student._id,
-        name: e.student.name,
-        email: e.student.email,
-        enrolledAt: e.enrolledAt,
-      }))
+      enrollments
+        .filter((e) => e.student)
+        .map((e) => ({
+          studentId: e.student._id,
+          name: e.student.name,
+          email: e.student.email,
+          enrolledAt: e.enrolledAt,
+        }))
     );
   } catch (err) {
     next(err);

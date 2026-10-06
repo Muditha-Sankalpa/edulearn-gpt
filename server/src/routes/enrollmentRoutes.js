@@ -1,5 +1,5 @@
 const express = require("express");
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 const verifyToken = require("../middleware/verifyToken");
 const requireRole = require("../middleware/requireRole");
 const validate = require("../middleware/validate");
@@ -22,7 +22,10 @@ router.patch(
   "/:id",
   verifyToken,
   requireRole("student"),
-  [body("status").isIn(["enrolled", "in-progress", "completed"]).withMessage("Invalid status")],
+  [
+    param("id").isMongoId().withMessage("Invalid enrollment id"),
+    body("status").isIn(["enrolled", "in-progress", "completed"]).withMessage("Invalid status"),
+  ],
   validate,
   updateEnrollmentStatus
 );

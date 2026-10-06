@@ -25,7 +25,7 @@ const CourseDetailContent = ({ courseId }) => {
           const enrollmentsRes = await axiosClient.get("/enrollments/me");
           setIsEnrolled(enrollmentsRes.data.some((e) => e.course?._id === courseId));
         }
-      } catch (err) {
+      } catch {
         setError("Course not found.");
       } finally {
         setLoading(false);

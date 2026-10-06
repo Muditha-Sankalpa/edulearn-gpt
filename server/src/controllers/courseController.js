@@ -1,4 +1,5 @@
 const Course = require("../models/Course");
+const Enrollment = require("../models/Enrollment");
 
 exports.createCourse = async (req, res, next) => {
   try {
@@ -22,7 +23,7 @@ exports.createCourse = async (req, res, next) => {
 
 exports.getCourses = async (req, res, next) => {
   try {
-    const courses = await Course.find().populate("instructor", "name email");
+    const courses = await Course.find().populate("instructor", "name");
     res.status(200).json(courses);
   } catch (err) {
     next(err);
@@ -31,7 +32,7 @@ exports.getCourses = async (req, res, next) => {
 
 exports.getCourseById = async (req, res, next) => {
   try {
-    const course = await Course.findById(req.params.id).populate("instructor", "name email");
+    const course = await Course.findById(req.params.id).populate("instructor", "name");
     if (!course) {
       return res.status(404).json({ message: "Course not found" });
     }
@@ -68,6 +69,9 @@ exports.updateCourse = async (req, res, next) => {
     await course.save();
     res.status(200).json(course);
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ message: "You already have a course with this title" });
+    }
     next(err);
   }
 };
@@ -82,6 +86,7 @@ exports.deleteCourse = async (req, res, next) => {
       return res.status(403).json({ message: "Not authorized to delete this course" });
     }
 
+    await Enrollment.deleteMany({ course: course._id });
     await course.deleteOne();
     res.status(200).json({ message: "Course deleted" });
   } catch (err) {

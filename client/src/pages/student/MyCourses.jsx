@@ -27,7 +27,7 @@ const MyCourses = () => {
       try {
         const res = await axiosClient.get("/enrollments/me");
         setEnrollments(res.data.filter((e) => e.course)); // guard against orphaned enrollments
-      } catch (err) {
+      } catch {
         setError("Failed to load your courses.");
       } finally {
         setLoading(false);
@@ -46,7 +46,7 @@ const MyCourses = () => {
       setEnrollments((prev) =>
         prev.map((e) => (e._id === enrollment._id ? { ...e, status: config.next } : e))
       );
-    } catch (err) {
+    } catch {
       setError("Failed to update progress.");
     } finally {
       setUpdatingId(null);
