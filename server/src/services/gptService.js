@@ -8,15 +8,6 @@ const getClient = () => {
   return client;
 };
 
-const MOCK_RESPONSE = {
-  message: "Based on your interest, here are some recommended courses to get started.",
-  recommendedCourses: [
-    "Introduction to Programming",
-    "Data Structures and Algorithms",
-    "Web Development Fundamentals",
-  ],
-};
-
 const SYSTEM_PROMPT = `You are a course advisor for an online learning platform. You will be given a list of available courses and a student's request. Recommend the most relevant courses from the list only — never invent course titles that aren't in the list. Respond ONLY with valid JSON in this exact shape: {"message": "<one short sentence of advice>", "recommendedCourses": ["<course title>", "..."]}. If none of the available courses are relevant, return an empty recommendedCourses array and say so in the message.`;
 
 const buildCourseListMessage = (courses) => {
@@ -24,9 +15,14 @@ const buildCourseListMessage = (courses) => {
   return `Available courses:\n${courseList || "(no courses available yet)"}`;
 };
 
+const getMockRecommendations = (courses) => ({
+  message: "Based on your interest, here are some recommended courses to get started.",
+  recommendedCourses: courses.slice(0, 3).map((c) => ({ id: c._id, title: c.title })),
+});
+
 const getCourseRecommendations = async (userPrompt, courses = []) => {
   if (process.env.USE_REAL_GPT !== "true") {
-    return MOCK_RESPONSE;
+    return getMockRecommendations(courses);
   }
 
   let completion;
@@ -59,10 +55,16 @@ const getCourseRecommendations = async (userPrompt, courses = []) => {
     parsed = { message: "Here are some suggestions.", recommendedCourses: [] };
   }
 
-  // Never trust model output blindly — only keep titles that actually exist
-  const validTitles = new Set(courses.map((c) => c.title));
+  // Never trust model output blindly — only keep titles that actually exist,
+  // and resolve them to their real course id so the UI can link to them
+  const courseByTitle = new Map(courses.map((c) => [c.title, c]));
   const recommendedCourses = Array.isArray(parsed.recommendedCourses)
-    ? parsed.recommendedCourses.filter((title) => validTitles.has(title))
+    ? parsed.recommendedCourses
+        .filter((title) => courseByTitle.has(title))
+        .map((title) => {
+          const course = courseByTitle.get(title);
+          return { id: course._id, title: course.title };
+        })
     : [];
 
   return {
